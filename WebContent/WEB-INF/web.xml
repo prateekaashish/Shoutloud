@@ -15,7 +15,8 @@
   </filter>
   <filter-mapping>
     <filter-name>f1</filter-name>
-    <url-pattern>/TestServlet</url-pattern>
-<url-pattern>/</url-pattern>
+    <url-pattern>/uhzdf</url-pattern>
+<url-pattern>/serkjn</url-pattern>
+<url-pattern>/serkjn</url-pattern>
   </filter-mapping>
 </web-app>

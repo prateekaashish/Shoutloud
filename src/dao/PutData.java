@@ -10,19 +10,18 @@ import simple.JSONObject;
 
 public class PutData {
 
-	public static void UpdateLocation(String sql){
+	public static boolean UpdateLocation(String sql) throws Exception{
+		boolean sucessfull;
 		DataBase db=new DataBase();
 		Connection conn=db.openConnection();
 		Statement stmt;
-		try {
 			stmt = conn.createStatement();
-			stmt.executeUpdate(sql);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		};
-		 
-		
+			if(stmt.executeUpdate(sql)>=1){
+				sucessfull=true;
+			}else{
+				sucessfull= false;
+			}
+	return sucessfull;
 	}
 	public static void register (JSONObject info)throws Exception{
 		String first_name=(String)(info.get("first_name"));
@@ -34,9 +33,7 @@ public class PutData {
 		String phone_number=(String)info.get("phone_number");
 		DataBase db=new DataBase();
 		Connection conn=db.openConnection();
-		
 		 PreparedStatement updateemp;
-			
 				updateemp = conn.prepareStatement
 					      ("insert into user_info (first_name,lastname,username,password,email,phone_number,address) VALUES(?,?,?,?,?,?,?)");
 			      updateemp.setString(1,first_name);
@@ -47,12 +44,12 @@ public class PutData {
 			      updateemp.setString(6,phone_number);
 			      updateemp.setString(7,address);
 			      updateemp.executeUpdate();
-				// TODO Auto-generated catch block
 		
 			
 		
 	}
-	public static void TagMessage(JSONObject message){
+	public static boolean TagMessage(JSONObject message) throws Exception{
+		boolean sucessfull;
 		String phone_number=(String)message.get("phone_number");
 		String m=(String)message.get("message");
 		String distance=(String)message.get("distance");
@@ -62,40 +59,23 @@ public class PutData {
 		long unixTimestamp = Instant.now().getEpochSecond();
 		long time=timecoming+unixTimestamp;
 		DataBase db=new DataBase();
-		System.out.print(message);
-		Connection conn=db.openConnection();
-		 PreparedStatement updateemp;
-		try {
-			updateemp = conn.prepareStatement
-				      ("insert into tagged_messages (TAGGER,MESSAGE,LONGITUDE,LATITUDE,DISTANCE,TIME) VALUES(?,?,?,?,?,?)");
-		      updateemp.setString(1,phone_number);
-		      updateemp.setString(2,m);
-		      updateemp.setString(3,longitude);
-		      updateemp.setString(4,latitude);
-		      updateemp.setString(5,distance);
-		      updateemp.setString(6,time+"");
-		      updateemp.executeUpdate();
-		 } catch (SQLException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
+			Connection conn=db.openConnection();
+			 PreparedStatement updateemp;
+				updateemp = conn.prepareStatement
+					      ("insert into tagged_messages (TAGGER,MESSAGE,LONGITUDE,LATITUDE,DISTANCE,TIME) VALUES(?,?,?,?,?,?)");
+				updateemp.setString(1,phone_number);
+			      updateemp.setString(2,m);
+			      updateemp.setString(3,longitude);
+			      updateemp.setString(4,latitude);
+			      updateemp.setString(5,distance);
+			      updateemp.setString(6,time+"");
+			     
+			      if(updateemp.executeUpdate()>=1){
+			    	  sucessfull=true;
+			      }else{
+			    	  sucessfull=false;
+			      }
+			      conn.close();
+			      return sucessfull;
 		}
-		try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	public static void InsertLocation(String sql){
-		DataBase db=new DataBase();
-		Connection conn=db.openConnection();
-		Statement stmt;
-		try {
-			stmt = conn.createStatement();
-			stmt.executeUpdate(sql);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		 	}
 }

@@ -29,20 +29,21 @@ public class LocationUpdate extends HttpServlet {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.print("LocationUpdate post hit");
-
-		ServletInputStream is=request.getInputStream();
-		DataInputStream dis=new DataInputStream(is);
-		String input;
+		ServletInputStream is=null;
+		DataInputStream dis=null;
+		DataOutputStream writer=null;
+		JSONObject status=null;
 		try{
+		System.out.print("LocationUpdate post hit");
+		is=request.getInputStream();
+		dis=new DataInputStream(is);
+		String input;
+		status =new JSONObject();      
+		writer = new DataOutputStream(response.getOutputStream());
 		if((input=dis.readUTF())!=null){
-			
 			System.out.println(input);
 			response.setStatus(HttpServletResponse.SC_OK);
-			DataOutputStream writer = new DataOutputStream(response.getOutputStream());
-            writer.flush();
-            writer.close();            
-            JSONParser p=new JSONParser();
+		    JSONParser p=new JSONParser();
             JSONObject update=(JSONObject)p.parse(input);
             Double latitude=(Double)update.get("latitude");
             Double altitude=(Double)update.get("altitude");
@@ -51,23 +52,39 @@ public class LocationUpdate extends HttpServlet {
             String sql="select *from user_location where phone_number="+UserNumber;
             if(dao.FetchData.cheackForUser(sql)){
               sql="UPDATE user_location SET latitude="+latitude+", altitude="+altitude+", longitude="+longitude+"where phone_number="+UserNumber;
-              dao.PutData.UpdateLocation(sql);
+              if(dao.PutData.UpdateLocation(sql)){
+            	  	status.put("status",1);
+            	  	writer.writeUTF(status.toJSONString());
+      				writer.flush();
+      				writer.close();      
+              }else{
+                  	status.put("status",0);
+            	  	writer.writeUTF(status.toJSONString());
+      				writer.flush();
+      				writer.close();      
+              }
             }else{
             	sql="insert into user_location (phone_number,latitude,longitude,altitude) values ("+UserNumber+","+latitude+","+longitude+","+altitude+")";
-            System.out.println(sql);
-            dao.PutData.InsertLocation(sql);
-            	
+            	 if(dao.PutData.UpdateLocation(sql)){
+                }else{
+                   	status.put("status",0);
+            	  	writer.writeUTF(status.toJSONString());
+       				writer.flush();
+       				writer.close();      
+               }
             }
-            /*
-            JSONObject contacts=(JSONObject)update.get("contacts");
-            for(Object e:contacts.keySet()){
-            	String key=e.toString();
-            	user_flags.UserFlags.modifyFlag(key,"FRIENDS_LOCATION_CHANGED", true);
-            }*/
 	}
 		}catch(Exception e)
 		{
 			e.printStackTrace();
+				writer = new DataOutputStream(response.getOutputStream());
+				status =new JSONObject();   
+				status.put("status",2);
+				status.put("exception", e);
+        	  	writer.writeUTF(status.toJSONString());
+				writer.flush();
+				writer.close();      
+    
 		}
 	
 		

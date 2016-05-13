@@ -66,13 +66,14 @@ public class Update_user extends HttpServlet {
 				writer.close();
 				System.out.println("anonymous users"+userLocations);
 			}else if(type.equals("GETCONTACTS")){
-				System.out.println("inside getcontacts");
+					System.out.println("inside getcontacts");
 				JSONArray contactLocations=dao.FetchData.getLocationOfContacts(data);
 				DataOutputStream writer = new DataOutputStream(response.getOutputStream());
 	            writer.writeUTF(contactLocations.toJSONString());
 				writer.flush();
 				writer.close();
 				System.out.println(contactLocations);
+				
 			}else if(type.equals("GETTAGGEDMESSAGES")){
 				System.out.println("inside gettagged messages");
 				JSONArray taggedMessages=dao.FetchData.getTaggedMessages(data);
@@ -81,6 +82,14 @@ public class Update_user extends HttpServlet {
 				writer.flush();
 				writer.close();
 				System.out.println(taggedMessages);
+			}else if(type.equals("GETALLUSERSWITHINROOM")){
+				System.out.println(data);
+				JSONArray users=dao.FetchData.getAllUsersWitinRoom(data);
+				DataOutputStream writer = new DataOutputStream(response.getOutputStream());
+	            writer.writeUTF(users.toJSONString());
+				writer.flush();
+				writer.close();
+				System.out.println(users.toJSONString());
 			}
 			
 			//wait(1000);

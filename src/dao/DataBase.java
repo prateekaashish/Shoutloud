@@ -2,10 +2,19 @@ package dao;
 import java.sql.*;
 
 //import com.mysql.jdbc.PreparedStatement;
+/*MySQL 5.5 database added.  Please make note of these credentials:
 
+       Root User: admin1AWCrnw
+   Root Password: UsL37QIHimBI
+   Database Name: shoutloud
+
+Connection URL: mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
+
+You can manage your new MySQL database by also embedding phpmyadmin.
+The phpmyadmin username and password will be the same as the MySQL credentials above.*/
 public class DataBase {
 	
-	  static String URL = "jdbc:mysql://localhost:3306/new?noAccessToProcedureBodies=true";
+	  static String URL = "jdbc:mysql://localhost:3306/new";
       static String USER = "java";
       static String PASSWORD = "password";
       static String DRIVER_CLASS = "com.mysql.jdbc.Driver"; 
@@ -22,8 +31,8 @@ public class DataBase {
     public DataBase()
     {
     	connection=null;
-    	openConnection();
-    	System.out.print(connection);
+    	//openConnection();
+    	//System.out.print(connection);
     }
 	public  Connection openConnection()
 	{
